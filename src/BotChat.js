@@ -93,7 +93,7 @@ const elonSetup = {
 
     setTimeout(()=> {
       fetchResponse();
-    }, 7000);
+    }, 3000);
 
   }, [currentSpeaker, elonMessages, markMessages]);
 
