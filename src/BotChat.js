@@ -3,6 +3,7 @@ import axios from 'axios';
 import './BotChat.css';
 import elonProfile from './assets/elon.jpg'; // Replace with actual profile image
 import zuckProfile from './assets/mark.png'; // Replace with actual profile image
+import getConfig from './config';
 
 function BotChat() {
 
@@ -47,6 +48,7 @@ const elonSetup = {
       img: zuckProfile
     }
   ];
+  const { API_URL } = getConfig();
 
   useEffect(() => {
     const fetchResponse = async () => {
@@ -55,7 +57,7 @@ const elonSetup = {
       try {
         let response;
         if (currentSpeaker === 'elon') {
-          response = await axios.post('http://54.169.89.178:3001/api/chat', { messages: markMessages });
+          response = await axios.post(API_URL, { messages: markMessages });
           console.log("Response received: \n", response);
           const responseContent = response.data.content;
           setMessages(prevMessages => [...prevMessages, {
@@ -69,7 +71,7 @@ const elonSetup = {
           }]);
           
         } else if (currentSpeaker === 'mark') {
-          response = await axios.post('http://54.169.89.178:3001/api/chat', { messages: elonMessages });
+          response = await axios.post(API_URL, { messages: elonMessages });
           console.log("Response received: \n", response);
           const responseContent = response.data.content;
           setMessages(prevMessages => [...prevMessages, {
