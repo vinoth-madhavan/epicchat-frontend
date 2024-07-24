@@ -1,10 +1,12 @@
 
 const config = {
     development: {
-      API_URL: 'http://localhost:3001/api/chat',
+      CHAT: 'http://localhost:3001/api/chat',
+      BOTS_LIST: 'http://localhost:3001/api/botsList',
     },
     production: {
-      API_URL: 'https://api.vinothmadhavan.com/api/chat',
+      CHAT: 'https://api.vinothmadhavan.com/api/chat',
+      BOTS_LIST: 'https://api.vinothmadhavan.com/api/botsList',
     },
   };
   

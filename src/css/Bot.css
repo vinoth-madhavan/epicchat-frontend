@@ -1,0 +1,23 @@
+
+.bot-thumbnail {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    background: #dadada;
+    padding: 2px;
+    margin: 6px;
+    flex-grow: 1;
+}
+.bot-image {
+    margin: 5px;
+    padding: 5px;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.bot-name {
+    padding: 1px 1px 1px 1px;
+    margin: 1px 1px 1px 1px;
+    
+}

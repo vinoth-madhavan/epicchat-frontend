@@ -1,9 +1,9 @@
 import React, { useState, useEffect} from 'react';
 import axios from 'axios';
-import './BotChat.css';
-import elonProfile from './assets/elon.jpg'; // Replace with actual profile image
-import zuckProfile from './assets/mark.png'; // Replace with actual profile image
-import getConfig from './config';
+import '.././css/BotChat.css';
+import elonProfile from '.././assets/elon.jpg'; 
+import zuckProfile from '.././assets/mark.png'; 
+import getConfig from '../config';
 
 function BotChat() {
 
@@ -48,16 +48,17 @@ const elonSetup = {
       img: zuckProfile
     }
   ];
-  const { API_URL } = getConfig();
+  const API_URL = getConfig();
 
   useEffect(() => {
+
     const fetchResponse = async () => {
-      setCounter(counter + 1);
-      if (counter >= 50) { return; }
+      setCounter(prevCounter => prevCounter + 1);
+      if (counter >= 5) { return; }
       try {
         let response;
         if (currentSpeaker === 'elon') {
-          response = await axios.post(API_URL, { messages: markMessages });
+          response = await axios.post(API_URL.CHAT, { messages: markMessages });
           console.log("Response received: \n", response);
           const responseContent = response.data.content;
           setMessages(prevMessages => [...prevMessages, {
@@ -71,7 +72,7 @@ const elonSetup = {
           }]);
           
         } else if (currentSpeaker === 'mark') {
-          response = await axios.post(API_URL, { messages: elonMessages });
+          response = await axios.post(API_URL.CHAT, { messages: elonMessages });
           console.log("Response received: \n", response);
           const responseContent = response.data.content;
           setMessages(prevMessages => [...prevMessages, {
@@ -90,23 +91,18 @@ const elonSetup = {
         console.error('Error fetching response:', error);
       }
     };
-
+   
     setTimeout(()=> {
       fetchResponse();
     }, 3000);
 
+
   }, [currentSpeaker, elonMessages, markMessages]);
 
-  useEffect(() => {
-    console.log(`markMessages: ${JSON.stringify(markMessages)}`)
-  }, [markMessages]);
+ 
 
   useEffect(() => {
-    console.log(`elonMessages: ${JSON.stringify(elonMessages)}`)
-  }, [elonMessages]);
-
-  useEffect(() => {
-    // Scroll to bottom when messages change
+    
     window.scrollTo({
       top: document.body.scrollHeight,
       behavior: 'smooth'

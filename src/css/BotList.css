@@ -1,0 +1,47 @@
+
+:root {
+    --header-height: 200px;
+}
+  
+
+.bot-list-component {
+
+}
+
+.bot-list-title {
+    color: white;
+    margin: 15px;
+    padding: 10px;
+    font-size: 20px;
+    text-align: left;
+}
+.bot-list {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding: 5px;
+    margin: 5px;
+    flex-wrap: wrap;
+    
+}
+
+@media (min-width: 768px) {
+    /* Styles for tablets and larger */
+    .bot-list {
+        max-height: calc(100vh - var(--header-height));
+        overflow-y: auto ;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    /* Styles for small laptops/desktops and larger */
+  }
+  
+  @media (min-width: 1280px) {
+    /* Styles for large laptops/desktops and larger */
+  }
+  
+  @media (min-width: 1536px) {
+    /* Styles for extra large screens */
+  }
+  

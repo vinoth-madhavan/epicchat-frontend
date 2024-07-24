@@ -12,13 +12,13 @@ body {
 .chat-container {
   display: flex;
   flex-direction: column;
-  margin: 20px auto;
-  max-width: 800px; /* Reduced width */
-  width: 100%;
   background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
+  margin: 15px 0px 0px 5px;
+  max-height: calc(100vh - var(--header-height));
+  overflow-x: auto;
 }
 
 .chat-bubble {
@@ -71,7 +71,7 @@ body {
   background-color: #edf2f7; /* Soft blue-gray */
   border-radius: 15px;
   padding: 10px;
-  max-width: 60%;
+  max-width: 80%;
   word-wrap: break-word;
   text-align: left; /* Align text within bubbles */
   font-size: 15px;
@@ -92,21 +92,26 @@ body {
 
 
 @media (min-width: 768px) {
-  .chat-container {
-    max-width: 600px;
-  }
-
+  /* Styles for tablets and larger */
   .message {
     max-width: 70%;
+  }
+  .chat-container {
+    margin: 0px 0px 0px 5px;
   }
 }
 
 @media (min-width: 1024px) {
-  .chat-container {
-    max-width: 700px;
-  }
-
+  /* Styles for small laptops/desktops and larger */
   .message {
-    max-width: 80%;
+    max-width: 60%;
   }
+}
+
+@media (min-width: 1280px) {
+  /* Styles for large laptops/desktops and larger */
+}
+
+@media (min-width: 1536px) {
+  /* Styles for extra large screens */
 }

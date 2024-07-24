@@ -1,5 +1,6 @@
 import React from 'react';
-import './App.css';
+import '.././css/App.css';
+import BotsList from './BotsList';
 import BotChat from './BotChat';
 
 function App() {
@@ -9,7 +10,10 @@ function App() {
         <div className='App-title'>Celebrity Bots</div>
         <div className='App-subheader'>Pit your favourite celebrities against each other</div>
       </header>
-      <BotChat />
+      <div className='bots-container'>
+        <div className="bot-list-container"><BotsList/></div>
+        <div className='bot-chat-container'><BotChat /></div>
+      </div>
     </div>
   );
 }
