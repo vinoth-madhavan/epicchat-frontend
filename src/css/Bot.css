@@ -7,7 +7,7 @@
     padding: 2px;
     margin: 6px;
     flex-grow: 1;
-    max-width: 133px;
+    max-width: 90px;
     transition: transform 0.2s ease;
     position: relative; 
 }
@@ -19,7 +19,7 @@
 }
 
 .tick-mark {
-    font-size: 30px; 
+    font-size: 20px; 
     color: #6aff57;
     position: absolute;
     top: 5px;
@@ -44,12 +44,13 @@
 .bot-image {
     margin: 5px;
     padding: 5px;
-    width: 100px;
-    height: 100px;
+    width: 50px;
+    height: 50px;
     object-fit: cover;
     border-radius: 50%;
 }
 .bot-name {
+    font-size: 14px;
     padding: 1px 1px 1px 1px;
     margin: 1px 1px 1px 1px;
     
