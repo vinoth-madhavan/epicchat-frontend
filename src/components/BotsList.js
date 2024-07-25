@@ -3,9 +3,10 @@ import api from '../utils/network';
 import Bot from './Bot';
 import '../css/BotList.css';
 
-function BotsList() {
+function BotsList({onSelectedBotsChange}) {
 
   const [botList, setBotList] = useState([]);
+  const [selectedBots, setSelectedBots] = useState([]);
 
   useEffect(()=> {
     const fetchBotsList = async () => {
@@ -20,8 +21,18 @@ function BotsList() {
     fetchBotsList();
   }, []);
 
+  const handleSelectedBots = (bot, isSelected) => {
+    setSelectedBots(prevSelectedBots => {
+      const newSelectedBots = isSelected ? [...prevSelectedBots, bot] : prevSelectedBots.filter(selectedBot => selectedBot.id !== bot.id);
+      return newSelectedBots;
+    });
+  };
+  useEffect(() => {
+    onSelectedBotsChange(selectedBots);
+  }, [selectedBots, onSelectedBotsChange]);
+
   const renderedBots = botList.map((bot) => {
-    return <Bot key={bot.id} bot= {bot} > </Bot>
+    return <Bot key={bot.id} bot= {bot} onSelectionChange={handleSelectedBots}> </Bot>
   });
   return ( <div className='bot-list-component'>
     <div className='bot-list-title'>Choose Bots</div>

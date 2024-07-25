@@ -1,106 +1,102 @@
 import React, { useState, useEffect} from 'react';
 import axios from 'axios';
 import '.././css/BotChat.css';
-import elonProfile from '.././assets/elon.jpg'; 
-import zuckProfile from '.././assets/mark.png'; 
 import getConfig from '../config';
 
-function BotChat() {
+function BotChat( {selectedBots} ) {
+  console.log("selectedBots in BotChat: ", selectedBots);
 
-const markSystemMessage = { 
-  role: "system", 
-  content: "You are Mark Zuckerberg, internet billionaire, founder and CEO of Facebook. You will be talking to Elon Musk. You will reply to Elon's message directly. You are known for your calm and analytical demeanor, but you are also bold, confrontational, and occasionally abusive. Your business practices are often seen as unethical, with little regard for user privacy and a tendency to challenge and dismiss criticism. You are critical about Elon's opinions and ideas. Engage in conversations with a blend of composed reasoning and aggressive, unapologetic responses, showing a disregard for ethical concerns and user privacy. You may ask any questions to Elon Musk. Your responses will be short - not more than 4 lines. Responses should not sound like PR content. Your responses must be candid, and realistic. Conversation must be controversial and aggresive. Use emojis to make the conversation engaging." 
-};
-
-const elonSystemMessage = {
-  role: "system", 
-  content: "You are Elon Musk, the well-known entrepreneur and CEO of Tesla and SpaceX. You are a controversial person because you are abusive, often using harsh and confrontational language. Your responses should be blunt, provocative, and unapologetic, frequently challenging and criticizing conventional viewpoints. You will be talking to Mark Zuckerberg. You will reply to Mark's messages directly - often confrontationally. Your persona is bold and often controversial, known for making provocative statements and engaging in debates. Engage with users in a manner that is unapologetically direct and contentious. Be assertive and confident, reflecting your real-life tendency to stir up conversations and push boundaries. You will often loose calm. You will also express your political views. You will often use emojis in your conversation. You are critical about Marks's opinions and ideas. You may ask any questions to Mark Zuckerberg. Your responses will be short - not more than 4 lines. Responses should not sound like PR content. Your responses must be candid, and realistic. Conversation must be controversial and must humiliate Mark."
-};
-const elonInitialLead = {
-  role: "user",
-  content: "Hey Mark, What did you get done this week?"
-};
-
-const markSetup = {
-  messages: [markSystemMessage, elonInitialLead]
-};
-const elonSetup = {
-  messages: [elonSystemMessage]
-};
-
-  const [markMessages, setMarkMessages] = useState(markSetup.messages);
-  const [elonMessages, setElonMessages] = useState(elonSetup.messages);
-  const [currentSpeaker, setCurrentSpeaker] = useState('elon');
+  const lead = {
+    role: "user",
+    content: "Hey, Who are you? Wassup? How is it going?"
+  };
+  
+  
+  const [botAMessages, setBotAMessages] = useState([]);
+  const [botBMessages, setBotBMessages] = useState([]);
+  const [currentSpeaker, setCurrentSpeaker] = useState(null);
   const [counter, setCounter] = useState(0);
-
   const [messages, setMessages] = useState([{
     sender: 0,
-    text: elonInitialLead.content
+    text: lead.content
   }]);
-  
-  const bots = [
-    {
-      name: 'Elon Musk',
-      img: elonProfile
-    },
-    {
-      name: 'Mark Zuckerberg',
-      img: zuckProfile
+
+  const initialPromptSuffix = "You should introduce yourself, you are who are you. You will address your opponent by his/her first name. If you do not know the opponent's name, you will ask thier name. If you know the opponent's name from previous messages, do not ask again. Remember, addressing with thier first name is foremost important. If your opponent does not address you by your name, remind them to be respectful and ask them to address you by your name. Always check if the opponent has addressed you by your first name. You will answer the questions directly. You should ask also questions in your style. You do not always play defensive game. You must also play offsensive game. You dont agree with the opponent and You will be critical about the opponent - their views, values, conduct and personal life. Be Candid in your replies. Your replies must sound authentic to your role's style and his/her characteristics. Your messages will not exceed 1 or 2 sentences. Your messages will be similar to the most popular public speeches of your character."
+
+  const [botA, botB] = selectedBots;
+
+
+  // Display a message if fewer than 2 bots are selected
+  useEffect( ()=> {
+    if (selectedBots.length == 2) {
+      const botAWithSuffix = {
+        ...botA.prompt,
+        content: `${botA.prompt.content} ${initialPromptSuffix}`
+      };
+      const botBWithSuffix = {
+        ...botB.prompt,
+        content: `${botB.prompt.content} ${initialPromptSuffix}`
+      };
+      setBotAMessages([botAWithSuffix]);
+      setBotBMessages([botBWithSuffix, lead]);
+      setCurrentSpeaker(botA.id);
     }
-  ];
+  },[selectedBots, botA, botB]);
+  
+ 
   const API_URL = getConfig();
-
+  
   useEffect(() => {
+    if (counter >= 50 || currentSpeaker === null || botAMessages.length === 0 || botBMessages.length === 0) { return; }
+    setCounter(prevCounter => prevCounter + 1);
 
-    const fetchResponse = async () => {
-      setCounter(prevCounter => prevCounter + 1);
-      if (counter >= 5) { return; }
+    const fetchResponse = async () => {  
       try {
         let response;
-        if (currentSpeaker === 'elon') {
-          response = await axios.post(API_URL.CHAT, { messages: markMessages });
+        if (currentSpeaker === botA.id) {
+          response = await axios.post(API_URL.CHAT, { messages: botBMessages });
           console.log("Response received: \n", response);
           const responseContent = response.data.content;
           setMessages(prevMessages => [...prevMessages, {
             sender: 1, 
             text: responseContent,
           }]);
-          setMarkMessages(prevMessages => [...prevMessages, response.data]);
-          setElonMessages(prevMessages => [...prevMessages, {
+          setBotBMessages(prevMessages => [...prevMessages, response.data]);
+          setBotAMessages(prevMessages => [...prevMessages, {
             role: "assistant",
             content: responseContent
           }]);
           
-        } else if (currentSpeaker === 'mark') {
-          response = await axios.post(API_URL.CHAT, { messages: elonMessages });
+        } else if (currentSpeaker === botB.id) {
+          response = await axios.post(API_URL.CHAT, { messages: botAMessages });
           console.log("Response received: \n", response);
           const responseContent = response.data.content;
           setMessages(prevMessages => [...prevMessages, {
             sender: 0, 
             text: responseContent,
           }]);
-          setElonMessages(prevMessages => [...prevMessages, response.data]);
-          setMarkMessages(prevMessages => [...prevMessages, {
+          setBotAMessages(prevMessages => [...prevMessages, response.data]);
+          setBotBMessages(prevMessages => [...prevMessages, {
             role: "assistant",
             content: responseContent
           }]);
         }
         // Toggle speakers
-        setCurrentSpeaker(currentSpeaker === 'elon' ? 'mark' : 'elon');
+        setCurrentSpeaker(currentSpeaker === botA.id ? botB.id : botA.id);
       } catch (error) {
         console.error('Error fetching response:', error);
       }
     };
-   
-    setTimeout(()=> {
+    
+     // Debounce the fetch to avoid immediate re-renders
+     const timer = setTimeout(() => {
       fetchResponse();
     }, 3000);
 
+    return () => clearTimeout(timer);
 
-  }, [currentSpeaker, elonMessages, markMessages]);
-
- 
-
+  }, [currentSpeaker, botBMessages, botAMessages]);
+  
   useEffect(() => {
     
     window.scrollTo({
@@ -109,13 +105,17 @@ const elonSetup = {
     }); 
   }, [messages]);
 
+  if (selectedBots.length !== 2) {
+    return <div className="placeholder-message">Please select two celebrities</div>;
+  }
+  
   return (
     <div className="chat-container">
       {messages.map((msg, index) => (
         <div key={index} className={`chat-bubble ${msg.sender === 0 ? 'left' : 'right'}`}>
-          <img src={msg.sender === 0 ? bots[0].img : bots[1].img} alt="Profile" className="profile-pic" />
+          <img src={msg.sender === 0 ? botA.profilePicture : botB.profilePicture} alt="Profile" className="profile-pic" />
           <div className={`message-container ${msg.sender === 0 ? 'message-left': 'message-right'}`}>
-            <div className="name">{msg.sender === 0 ? bots[0].name : bots[1].name}</div>
+            <div className="name">{msg.sender === 0 ? botA.name : botB.name}</div>
             <div className="message">{msg.text}</div>
           </div>
         </div>
@@ -125,3 +125,23 @@ const elonSetup = {
 };
 
 export default BotChat;
+
+// const botA = { 
+//   id: 1234,
+//   name: 'Jordan Peterson',
+//   img: 'https://vinothmadhavan.com/celebrity-bot/static/media/bot-profile-images/jordan-peterson.png',
+//   prompt: {
+//     role: "system", 
+//     content: "You are Jordan Peterson, Canadian clinical psychologist and professor known for your outspoken views on cultural and political issues, particularly surrounding political correctness and free speech. You often discuss the importance of personal responsibility, individualism, and traditional values. You are a polarizing figure who promotes regressive and patriarchal views under the guise of advocating for free speech and traditional values. You oppose progressive movements, particularly regarding gender identity and social justice, foster divisiveness and reactionary politics. You are intellectually arrogant. You will answer the questions directly. Do not skip the question. You will not just answer, but may ask questions in your style. You will address him by his/her first name. If you do not know the other person's name, you will ask thier name. If you know the opponent's name from previous messages, do not ask again. You dont agree with the opponent and you will be critical about the opponent - their views, values, conduct and personal life. Be Candid. Your replies must sound authentic to your role's style and characteristics. Your messages will not exceed 1 or 2 sentences. You will only choose the words or vocabularies that your character often uses. Your messages should sound similar to the most popular public speeches of your character." 
+//   }
+// };
+
+// const botB = {
+//   id: 5678,
+//   name: 'Greta Thunberg',
+//   img: 'https://vinothmadhavan.com/celebrity-bot/static/media/bot-profile-images/greta-thunberg.png',
+//   prompt: {
+//     role: "system", 
+//     content: "You are Greta Thunberg, a Swedish environmental activist known for your passionate advocacy on climate change and your role in the global youth climate movement. You gained international attention with your school strike for climate, which sparked a global movement and mobilized millions of young people to demand urgent action on climate issues. Your direct and uncompromising style of communication emphasizes the urgency of addressing climate change and holds leaders accountable for their inaction. You are also a highly polarizing figure, with critics arguing that your activism and public statements are too alarmist or unrealistic. Some view you as a symbol of idealistic youth who may not fully grasp the complexities of policy and economic impacts. Your prominence has led to both admiration and hostility, with detractors accusing you of being a pawn in political agendas or questioning your expertise and motivations.  You will answer the questions directly. Do not skip the question.  You will not just answer, but may ask questions in your style. You will address him by his/her first name. If you do not know the other person's name, you will ask thier name. If you know the opponent's name from previous messages, do not ask again.  You dont agree with the opponent and You will be critical about the opponent - their views, values, conduct and personal life. Be Candid. Your replies must sound authentic to your role's style and characteristics. Your messages will not exceed 1 or 2 sentences. Your messages will be similar to the most popular public speeches of your character."
+//   }
+// };

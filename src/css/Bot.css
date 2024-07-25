@@ -7,7 +7,40 @@
     padding: 2px;
     margin: 6px;
     flex-grow: 1;
+    max-width: 133px;
+    transition: transform 0.2s ease;
+    position: relative; 
 }
+.bot-thumbnail:hover {
+    transform: scale(1.1);
+}
+.bot-thumbnail.selected {
+    border: 2px solid #90EE90;
+}
+
+.tick-mark {
+    font-size: 30px; 
+    color: #6aff57;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #121a1a; 
+    border-radius: 100%;
+    padding: 3px;
+    z-index: 2;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.5); /* Semi-transparent white overlay */
+    border-radius: 10px; /* Match the border-radius of the thumbnail */
+    z-index: 1; /* Ensure it appears above the content */
+}
+
 .bot-image {
     margin: 5px;
     padding: 5px;

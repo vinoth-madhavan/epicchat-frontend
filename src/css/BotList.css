@@ -1,8 +1,6 @@
-
 :root {
-    --header-height: 200px;
+    --header-height: 250px;
 }
-  
 
 .bot-list-component {
 
@@ -22,7 +20,6 @@
     padding: 5px;
     margin: 5px;
     flex-wrap: wrap;
-    
 }
 
 @media (min-width: 768px) {
